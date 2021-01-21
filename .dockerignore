@@ -1,3 +1,10 @@
-*
+helm/
+.gitactions/
+images/
+kubernetes/
+README.md
+LICENSE
+docker-compose.yml
+.gitignore
 !Dockerfile
 !bin/sendgrid2datadog

@@ -1,1 +1,0 @@
-web: sendgrid2datadog

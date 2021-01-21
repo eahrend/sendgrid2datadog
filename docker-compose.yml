@@ -3,10 +3,22 @@ services:
   web:
     build: .
     environment:
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
       - DOGSTATSD_HOST=dogstatsd
+      - SENDGRID_CLIENT_ID=${SENDGRID_CLIENT_ID}
+      - SENDGRID_CLIENT_SECRET=${SENDGRID_CLIENT_SECRET}
+      - REDIS_HOST=cache
+      - REDIS_PORT=6379
     ports:
       - 8080:8080
+  redis:
+    image: redis:latest
+    container_name: cache
+    ports:
+      - "6379:6379"
+    logging:
+      driver: none
   dogstatsd:
     image: datadog/docker-dd-agent:latest-dogstatsd
     environment:
-      - API_KEY=${DATADOG_API_KEY}
+      - API_KEY=${API_KEY}
