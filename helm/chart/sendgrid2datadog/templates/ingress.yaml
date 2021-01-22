@@ -1,0 +1,27 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}{{- end }}
+  name: {{ template "sendgrid2datadog.fullname" . }}-ing
+  namespace: {{ .Release.Namespace }}
+spec:
+  rules:
+  {{- range $key, $value := .Values.ingress.hosts }}
+  - host: {{ $value }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ $.Values.service.name }}
+          servicePort: {{ $.Values.service.port }}
+  {{- end }}
+  tls:
+  - secretName: "{{ .Chart.Name }}-tls-cert"
+    hosts:
+    {{- range .Values.ingress.hosts }}
+      - {{ . }}
+    {{- end}}
+{{- end }}

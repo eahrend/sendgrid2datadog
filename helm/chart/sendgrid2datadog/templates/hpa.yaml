@@ -1,0 +1,28 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "sendgrid2datadog.fullname" . }}-hpa
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "sendgrid2datadog.name" . }}
+    chart: {{ template "sendgrid2datadog.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    environment: {{ .Values.environment }}
+    team: {{ .Values.team }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "sendgrid2datadog.fullname" . }}
+  minReplicas: {{ .Values.replicaCount }}
+  maxReplicas: {{ .Values.maxReplicaCount }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.targetCPUUtilization }}
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: {{ .Values.targetMemoryUtilization }}

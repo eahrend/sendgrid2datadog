@@ -1,0 +1,41 @@
+replicaCount: 8
+maxReplicaCount: 48
+environment: production
+team: devops
+image:
+  name: eahrend/sendgrid2datadog:latest
+
+resources:
+  requests:
+    memory: "190Mi"
+    cpu: "30m"
+  limits:
+    memory: "190Mi"
+    cpu: "360m"
+
+targetCPUUtilization: 75
+targetMemoryUtilization: 75
+
+
+service:
+  type: NodePort
+  port: 8080
+  name: sendgrid2datadog
+  targetPort: 8080
+  healthCheck: "/healthcheck"
+
+c_env:
+
+
+ingress:
+  enabled: true
+  hosts:
+    - ${hostname}
+  annotations:
+    nginx.ingress.kubernetes.io/custom-http-errors: "420"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/enable-cors: "true"
+    kubernetes.io/ingress.class: "nginx"
+    certmanager.k8s.io/acme-challenge-type: "http01"

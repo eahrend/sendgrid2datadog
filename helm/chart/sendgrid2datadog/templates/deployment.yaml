@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ template "sendgrid2datadog.fullname" . }}
+  labels:
+    app: {{ template "sendgrid2datadog.name" . }}
+    chart: {{ template "sendgrid2datadog.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    environment: {{ .Values.environment }}
+    team: {{ .Values.team }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "sendgrid2datadog.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sendgrid2datadog.name" . }}
+        release: {{ .Release.Name }}
+        environment: {{ .Values.c_env.ENV }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- range $key, $value := .Values.c_env }}
+            - name: {{ $key | upper }}
+              value: {{ $value | quote }}
+          {{- end }}
+            - name: DOGSTATSD_HOST
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP   
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: {{ .Values.failureThreshold }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            successThreshold: {{ .Values.successThreshold }}
+            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            httpGet:
+              path: {{ .Values.service.healthCheck }}
+              port: {{ .Values.service.targetPort }}
+          readinessProbe:
+            failureThreshold: {{ .Values.failureThreshold }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            successThreshold: {{ .Values.successThreshold }}
+            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            httpGet:
+              path: {{ .Values.service.healthCheck }}
+              port: {{ .Values.service.targetPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
