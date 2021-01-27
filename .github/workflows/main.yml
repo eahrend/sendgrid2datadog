@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: eahrend/sendgrid2datadog:latest
+          tags: eahrend/sendgrid2datadog:${GITHUB_SHA::8}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
