@@ -152,9 +152,7 @@ func main() {
 	sendgridClientID = os.Getenv("SENDGRID_CLIENT_ID")
 	var err error
 	log := logrus.New()
-	formatter := &logrus.JSONFormatter{
-		PrettyPrint: true,
-	}
+	formatter := &logrus.JSONFormatter{}
 	log.SetReportCaller(true)
 	log.SetOutput(os.Stdout)
 	log.SetFormatter(formatter)
