@@ -170,7 +170,7 @@ func main() {
 	// panic recovery
 	app.Use(gin.Recovery())
 
-	app.Use(ginlogrus.Logger(log), gin.Recovery())
+	app.Use(ginlogrus.Logger(log, "/healthcheck"), gin.Recovery())
 	// default cors
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
