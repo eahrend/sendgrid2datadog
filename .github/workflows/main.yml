@@ -32,8 +32,5 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: eahrend/sendgrid2datadog
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
