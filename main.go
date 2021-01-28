@@ -71,7 +71,6 @@ func webhookHandler(c *gin.Context) {
 	bodyBytes, _ := ioutil.ReadAll(c.Request.Body)
 	// consider the token verified
 	var events SendGridEvents
-	reqlogger.Infoln(string(bodyBytes))
 	if err := json.Unmarshal(bodyBytes, &events); err != nil {
 		reqlogger.WithField("event", "unmarshalling events").Errorln(err)
 		c.JSON(500, map[string]string{"error": err.Error()})
@@ -161,6 +160,9 @@ func main() {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+	if os.Getenv("DD_DOGSTATSD_SOCKET") != "" {
+		dogStatsDAddr = "DD_DOGSTATSD_SOCKET"
+	}
 	statsdClient, err = statsd.New(dogStatsDAddr)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
