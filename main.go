@@ -161,7 +161,7 @@ func main() {
 		DB:       0,  // use default DB
 	})
 	if os.Getenv("DD_DOGSTATSD_SOCKET") != "" {
-		dogStatsDAddr = "DD_DOGSTATSD_SOCKET"
+		dogStatsDAddr = os.Getenv("DD_DOGSTATSD_SOCKET")
 	}
 	statsdClient, err = statsd.New(dogStatsDAddr)
 	if err != nil {
