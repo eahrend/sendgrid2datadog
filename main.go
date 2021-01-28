@@ -110,11 +110,11 @@ func oauth(c *gin.Context) {
 	}
 	accessToken := uuid.New().String()
 	accessTokenEncoded := base64.StdEncoding.EncodeToString([]byte(accessToken))
-	rdb.Set(context.Background(), "oauth_token", accessTokenEncoded, time.Minute*60)
+	rdb.Set(context.Background(), "oauth_token", accessTokenEncoded, time.Minute*5)
 	sor := SendgridOauthResponse{
 		AccessToken: accessTokenEncoded,
 		TokenType:   "bearer",
-		ExpiresIn:   3600,
+		ExpiresIn:   300,
 	}
 	c.JSON(200, sor)
 }
