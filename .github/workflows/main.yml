@@ -32,5 +32,5 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          tags: ${{ steps.docker_meta.outputs.tags }}
+          tags: eahrend/sendgrid2datadog:${{ GITHUB_SHA }}
           labels: ${{ steps.docker_meta.outputs.labels }}
